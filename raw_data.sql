@@ -9,13 +9,13 @@ CREATE DATABASE lake_data;
 CREATE TABLE raw_data (
     original_timestamp VARCHAR(40),
     timestamp timestamp,
-    air_temperature REAL,
-    barometric_pressure REAL,
-    dew_point REAL,
-    relative_humidity REAL,
-    wind_direction REAL,
-    wind_gust REAL,
-    wind_speed REAL
+    air_temperature NUMERIC,
+    barometric_pressure NUMERIC,
+    dew_point NUMERIC,
+    relative_humidity NUMERIC,
+    wind_direction NUMERIC,
+    wind_gust NUMERIC,
+    wind_speed NUMERIC
 );
 
 --
@@ -40,3 +40,29 @@ DROP USER IF EXISTS lpo;
 CREATE USER lpo WITH PASSWORD 'mysecurepassword';
 GRANT CONNECT ON DATABASE lake_data TO lpo;
 GRANT SELECT ON raw_data TO lpo;
+
+
+--
+-- FUNCTION TO CALCULATE MEDIAN
+-- https://wiki.postgresql.org/wiki/Aggregate_Median
+--
+CREATE OR REPLACE FUNCTION _final_median(NUMERIC[])
+   RETURNS NUMERIC AS
+$$
+   SELECT AVG(val)
+   FROM (
+     SELECT val
+     FROM unnest($1) val
+     ORDER BY 1
+     LIMIT  2 - MOD(array_upper($1, 1), 2)
+     OFFSET CEIL(array_upper($1, 1) / 2.0) - 1
+   ) sub;
+$$
+LANGUAGE 'sql' IMMUTABLE;
+
+CREATE AGGREGATE median(NUMERIC) (
+  SFUNC=array_append,
+  STYPE=NUMERIC[],
+  FINALFUNC=_final_median,
+  INITCOND='{}'
+);
