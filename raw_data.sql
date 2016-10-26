@@ -19,7 +19,7 @@ CREATE TABLE raw_data (
 );
 
 --
--- Import raw data from files
+-- IMPORT RAW DATA FROM A FILE
 --
 COPY raw_data(original_timestamp,
               air_temperature,
@@ -32,3 +32,11 @@ COPY raw_data(original_timestamp,
 FROM '/vagrant/data/complete_data.txt';
 
 UPDATE raw_data SET timestamp=to_timestamp(original_timestamp, 'YYYY_MM_DD HH24:MI:SS');
+
+--
+-- USER WITH READ-ONLY ACCESS TO THE TABLE CONTAINING THE DATA.
+--
+DROP USER IF EXISTS lpo;
+CREATE USER lpo WITH PASSWORD 'mysecurepassword';
+GRANT CONNECT ON DATABASE lake_data TO lpo;
+GRANT SELECT ON raw_data TO lpo;
