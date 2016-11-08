@@ -7,7 +7,15 @@ This project uses the static version of the data as found in the [LPO_weatherdat
 - Postgres
 - python-psycopg2
 
-## TO DO
+## Usage
 
-- Create script to combine all the data so it can be used by `raw_data.sql`
-- Create a GUI
+After having the dependencies installed, simply run the `raw_data.sql` script to create the database, tables and populate the data. This should be done by a user with postgres priviledge, for example the `postgres` user:
+
+    sudo -i -u postgres
+    psql -f raw_data.sql
+
+
+## To Do
+
+- Create a GUI.
+    - Check [Caravel](https://github.com/airbnb/superset) and [D3](https://d3js.org/)
