@@ -2,17 +2,25 @@
 
 This project uses the static version of the data as found in the [LPO_weatherdata repository](https://github.com/lyndadotcom/LPO_weatherdata).
 
+
 ## Dependencies
 
-- Postgres
-- python-psycopg2
+- Python 2.7.x
+- Postgres 9.1.x
+- python-psycopg2 2.4.x
 
 ## Usage
 
-After having the dependencies installed, simply run the `raw_data.sql` script to create the database, tables and populate the data. This should be done by a user with postgres priviledge, for example the `postgres` user:
+First run the python script to aggregate the data in a single file running:
+
+    python import_data.py
+
+Then simply run the `raw_data.sql` script to create the database, tables and populate the data. This should be done by a user with postgres privileges, for example the `postgres` user:
 
     sudo -i -u postgres
     psql -f raw_data.sql
+
+By this point all the data should be properly stored in the database.
 
 
 ## To Do
